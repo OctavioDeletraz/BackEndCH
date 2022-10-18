@@ -1,9 +1,9 @@
 class User {
-    constructor(name, lastName, books, pets) {
-        this.name = name,
-            this.lastName = lastName,
-            this.books = books,
-            this.pets = pets
+    constructor(name, lastName) {
+        this.name = name;
+        this.lastName = lastName;
+        this.books = [];
+        this.pets = [];
     }
 
     getFullName() {
