@@ -59,38 +59,27 @@ class Contenedor {
 
     async deleteAll() {
         try {
-            fs.writeFileSync(`./${this.route}`, JSON.stringify([]))
+            fs.unlinkSync(`./${this.route}`)
             console.log("Se eliminaron todos los registros")
         } catch (error) {
             console.log(`No se pudieron eliminar los productos ${error}`)
         }
     }
 
-    async getNextId() {
-        try {
-            let products = await this.getAll();
-            let nextId
-            if (products.length > 0) {
-                nextId = parseInt(products[products.length - 1].id) + 1;
-            } else {
-                nextId = 1
-            }
-            return nextId
-        } catch (error) {
-            console.log("No se pudo obtener id", error)
-        }
-
-    }
-
     async save(product) {
-        console.log("Guardando...", product)
-        let nextId = await this.getNextId()
-        product.id = nextId
-        const allProductsArray = await this.getAll()
-        allProductsArray.push(product)
-        this.write(allProductsArray, `./${this.route}`)
+        if (fs.existsSync('./Products.json')) {
+            const data = JSON.parse(fs.readFileSync(`./${this.route}`, 'utf-8'))
+            const lastProd = data[data.length - 1]
+            product.id = lastProd.id + 1
+            data.push(product)
+            fs.writeFileSync(`./${this.route}`, `${JSON.stringify(data)}`)
+        } else {
+            const array = []
+            product.id = 1
+            array.push(product)
+            fs.writeFileSync('./Products.json', `${JSON.stringify(array)}`)
+        }
     }
-
 }
 module.exports = Contenedor
 

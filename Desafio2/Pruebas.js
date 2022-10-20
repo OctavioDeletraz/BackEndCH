@@ -7,16 +7,16 @@ async function main() {
     console.log(await products.getAll())
 
     // Prueba para borrar un producto por id, y mostrar resultados en pantalla
-    await products.deleteById(8)
-    console.log(await products.getAll())
+    // await products.deleteById(8)
+    // console.log(await products.getAll())
 
     // Prueba para obtener un producto especifico por id, y mostrarlo por pantalla
-    const productId = await products.getById(1)
-    console.log(productId)
+    // const productId = await products.getById(1)
+    // console.log(productId)
 
     // Prueba para eliminar todos los productos y mostrar el array vacio
-    await products.deleteAll()
-    console.log(await products.getAll())
+    // await products.deleteAll()
+    // console.log(await products.getAll())
 
 
     // Nuevo objeto para agregar al array de productos
