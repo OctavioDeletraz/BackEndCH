@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "title": "Pelota",
+        "precio": 200,
+        "thumbnail": "url"
+    },
+    {
+        "id": 2,
+        "title": "Cartucho",
+        "precio": 220,
+        "thumbnail": "url"
+    }
+]
