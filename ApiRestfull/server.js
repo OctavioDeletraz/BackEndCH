@@ -35,15 +35,15 @@ router.post('/products', async (req, res, next) => {
     res.send(body)
     // me quede aca
 })
-router.put('/products/', async (req, res, next) => {
-    const body = req.body
+router.put('/products/:id', async (req, res, next) => {
     try {
-        await products.update(body)
-        console.log("Se pudo")
+        const id = req.params.id;
+        const body = req.body;
+        await update(body, id)
+        res.send("Usuario actualizado")
     } catch (error) {
         console.log(error)
     }
-    res.send(body)
 })
 
 router.delete('/products/:id', async (req, res, next) => {

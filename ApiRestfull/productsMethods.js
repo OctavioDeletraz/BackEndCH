@@ -81,18 +81,12 @@ class Contenedor {
         }
     }
 
-    async update(product) {
+    async update(product, id) {
         try {
-            // buscar toda la lista, reemplazar el producto por el nuevo, guardar la lista
             const products = await this.getAll()
-            products.map((elem) => {
-                if (elem.id === parseInt(product.id)) {
-                    elem.title = product.title;
-                    elem.price = product.price;
-                    elem.thumbnail = product.thumbnail;
-                }
-            })
-            console.log(products);
+            const prodIndex = products.findIndex(prod => prod.id == parseInt(id))
+            products[prodIndex] = product;
+            this.write(products);
         } catch (error) {
             console.log(error)
         }
