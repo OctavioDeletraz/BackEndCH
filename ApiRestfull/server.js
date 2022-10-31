@@ -38,8 +38,12 @@ router.post('/products', async (req, res, next) => {
 router.put('/products/:id', async (req, res, next) => {
     try {
         const id = req.params.id;
-        const body = req.body;
-        await update(body, id)
+        const item = {
+            title: req.body.title,
+            price: req.body.price,
+            thumbnail: req.body.thumbnail
+        }
+        await products.update(item, id)
         res.send("Usuario actualizado")
     } catch (error) {
         console.log(error)
@@ -47,8 +51,8 @@ router.put('/products/:id', async (req, res, next) => {
 })
 
 router.delete('/products/:id', async (req, res, next) => {
-    const { id } = req.params
-    await products.deleteById(parseInt(id))
+    const id = req.params.id
+    await products.deleteById(id)
     res.json("Producto eliminado")
 })
 

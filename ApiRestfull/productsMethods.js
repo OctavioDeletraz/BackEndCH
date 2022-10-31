@@ -31,7 +31,8 @@ class Contenedor {
     async deleteById(id) {
         try {
             const products = await this.getAll()
-            const productsFiltered = products.filter(elem => elem.id !== id)
+            const productsFiltered = products.filter(elem => parseInt(elem.id) !== parseInt(id))
+
             if (products.length === productsFiltered.length) {
                 console.log("No existe el id")
                 return null
@@ -85,7 +86,7 @@ class Contenedor {
         try {
             const products = await this.getAll()
             const prodIndex = products.findIndex(prod => prod.id == parseInt(id))
-            products[prodIndex] = product;
+            products[prodIndex] = { id, ...product };
             this.write(products);
         } catch (error) {
             console.log(error)

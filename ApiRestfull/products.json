@@ -1,1 +1,20 @@
-[{"title":"Pincel","price":"200","thumbnail":"","id":1},{"title":"Martillo","price":"2500","thumbnail":"","id":2},{"title":"Destornillador","price":"700","thumbnail":"","id":3},{"title":"Chancletas","price":"4000","thumbnail":"asda","id":4}]
+[
+    {
+        "title": "Pincel",
+        "price": "200",
+        "thumbnail": "",
+        "id": 1
+    },
+    {
+        "title": "Martillo",
+        "price": "2500",
+        "thumbnail": "",
+        "id": 2
+    },
+    {
+        "title": "Destornillador",
+        "price": "700",
+        "thumbnail": "",
+        "id": 3
+    }
+]
