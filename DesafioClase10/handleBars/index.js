@@ -24,8 +24,8 @@ app.get('/', (req, res) => {
 })
 
 routerProd
-    .get('/', (req, res) => {
-        const products = contenedor1.getAll()
+    .get('/', async (req, res) => {
+        const products = await contenedor1.getAll()
         res.render('table', { products });
     })
     .post('/', (req, res) => {
