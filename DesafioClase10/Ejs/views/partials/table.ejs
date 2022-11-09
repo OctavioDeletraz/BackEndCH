@@ -1,0 +1,34 @@
+<h1>Productos</h1>
+<div class="entry">
+    <% if (products.length !=0) { %>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Imagen</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for (let i=0; i < products.length; i++) { %>
+                    <tr>
+                        <td>
+                            <%= products[i].id %>
+                        </td>
+                        <td>
+                            <%= products[i].title %>
+                        </td>
+                        <td>
+                            <%= products[i].price %>
+                        </td>
+                        <td><img src="<%= products[i].url %>" alt="<%= products[i].title %>" width="25"></td>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+        <% } else {%>
+            <br>
+            <h3> No hay ningún producto agregado. </h3>
+            <% } %>
+</div>
