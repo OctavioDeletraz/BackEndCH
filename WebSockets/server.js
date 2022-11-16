@@ -28,9 +28,8 @@ io.on('connection', async (socket) => {
     //productos
     socket.emit("productos", await productController.getAll())
     socket.on("guardarNuevoProducto", (nuevoProducto) => {
-
         productController.save(nuevoProducto)
-        io.sockets.emit("productos", productController.getAll)
+        io.sockets.emit("productos", productController.getAll())
     })
 
     //mensajes

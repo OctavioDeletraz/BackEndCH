@@ -1,38 +1,28 @@
-const { promises: fs } = require('fs')
+const fs = require('fs');
 
 class Contenedor {
+
     constructor(router) {
         this.route = router
     }
 
-
     async getAll() {
+        let allProductsArray = []
         try {
-            const content = JSON.parse(await fs.readFile(`./products.json`, 'utf-8')) // que paso con this.route
-            return content
+            let allProductsString = fs.readFileSync(`./${this.route}`, "utf8");
+            allProductsString.length > 0
+                ? (allProductsArray = JSON.parse(allProductsString))
+                : (allProductsArray = []);
         } catch (error) {
-            return []
+            console.log("Error en la lectura del archivo", error)
         }
-    }
-
-    async getById(id) {
-        try {
-            const products = await this.getAll()
-            const productsFiltered = products.filter(elem => elem.id == id)
-            if (productsFiltered.length == 0) {
-                return ({ error: 'producto no encontrado' })
-            } else {
-                productsFiltered
-            }
-        } catch (error) {
-            console.log(error)
-        }
+        return allProductsArray
     }
 
     async write(allProductsArray) {
         let allProductsString = JSON.stringify(allProductsArray);
         try {
-            await fs.writeFileSync(`./products.json`, allProductsString);
+            await fs.writeFileSync(`./${this.route}`, allProductsString);
         } catch (error) {
             console.log("Error de escritura", error);
         }
@@ -55,10 +45,22 @@ class Contenedor {
         }
     }
 
+    async getById(id) {
+        try {
+            const products = await this.getAll()
+            const productsFiltered = products.filter(elem => elem.id == id)
+            if (productsFiltered.length == 0) {
+                console.log("Id inexistente")
+            }
+            return productsFiltered
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     async deleteAll() {
         try {
-            fs.unlinkSync(`./products.json`)
+            fs.unlinkSync(`./${this.route}`)
             console.log("Se eliminaron todos los registros")
         } catch (error) {
             console.log(`No se pudieron eliminar los productos ${error}`)
@@ -67,11 +69,11 @@ class Contenedor {
 
     async save(product) {
         if (fs.existsSync('./products.json')) {
-            const data = JSON.parse(fs.readFileSync(`./products.json`, 'utf-8'))
+            const data = JSON.parse(fs.readFileSync(`./${this.route}`, 'utf-8'))
             const lastProd = data[data.length - 1]
             product.id = lastProd.id + 1
             data.push(product)
-            fs.writeFileSync(`./products.json`, `${JSON.stringify(data)}`)
+            fs.writeFileSync(`./${this.route}`, `${JSON.stringify(data)}`)
         } else {
             const array = []
             product.id = 1
