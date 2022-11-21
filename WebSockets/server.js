@@ -57,8 +57,7 @@ app.get('/:id', async (req, res, next) => {
 
 app.post('/', async (req, res, next) => {
     const body = req.body
-    const newProduct = await productController.save(body)
-    console.log(newProduct)
+    await productController.save(body)
     const prod = await productController.getAll()
     res.render('pages/index', { prod })
 })

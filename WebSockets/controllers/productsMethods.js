@@ -66,17 +66,20 @@ class Contenedor {
     }
 
     async save(product) {
-        if (fs.existsSync('./products.json')) {
-            const data = JSON.parse(fs.readFileSync(`./products.json`, 'utf-8'))
-            const lastProd = data[data.length - 1]
-            product.id = lastProd.id + 1
-            data.push(product)
-            fs.writeFileSync(`./products.json`, `${JSON.stringify(data)}`)
-        } else {
-            const array = []
-            product.id = 1
-            array.push(product)
-            fs.writeFileSync('./products.json', `${JSON.stringify(array)}`)
+        try {
+            const products = JSON.parse(await fs.readFile(`./products.json`, 'utf-8'))
+            let newId;
+            if (products.length == 0) {
+                newId = 1;
+            } else {
+                newId = products[products.length - 1].id + 1;
+            }
+            product.id = newId
+            products.push(product);
+            await fs.writeFile(`./products.json`, JSON.stringify(products, null, 2))
+            return (product)
+        } catch (error) {
+            return (error)
         }
     }
 
