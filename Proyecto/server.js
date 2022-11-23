@@ -15,5 +15,5 @@ const server = app.listen(process.env.PORT || 8080, () => {
 server.on("error", error => console.log(`Error en servidor ${error}`))
 
 app.get('/api', (req, res) =>
-    res.send('bienvenidos a la api')
+    res.send('api e-commerse')
 )
