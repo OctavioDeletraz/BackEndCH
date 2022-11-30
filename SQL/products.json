@@ -1,0 +1,74 @@
+[
+  {
+    "title": "Pincel",
+    "price": "200",
+    "thumbnail": "",
+    "id": 1
+  },
+  {
+    "title": "Martillo",
+    "price": "2500",
+    "thumbnail": "",
+    "id": 2
+  },
+  {
+    "title": "Destornillador",
+    "price": "700",
+    "thumbnail": "",
+    "id": 3
+  },
+  {
+    "title": "camion",
+    "price": "200",
+    "thumbnail": "asd",
+    "id": 4
+  },
+  {
+    "title": "cacara",
+    "price": "100",
+    "thumbnail": "151asd",
+    "id": 5
+  },
+  {
+    "title": "comadreja",
+    "price": "4500",
+    "thumbnail": "asda",
+    "id": 6
+  },
+  {
+    "title": "araña",
+    "price": "123",
+    "thumbnail": "asd",
+    "id": 7
+  },
+  {
+    "title": "araña",
+    "price": "123",
+    "thumbnail": "asd",
+    "id": 8
+  },
+  {
+    "title": "araña",
+    "price": "123",
+    "thumbnail": "asd",
+    "id": 9
+  },
+  {
+    "title": "araña",
+    "price": "123",
+    "thumbnail": "asd",
+    "id": 10
+  },
+  {
+    "title": "pelota",
+    "price": "5000",
+    "thumbnail": "asd",
+    "id": 11
+  },
+  {
+    "title": "pelota",
+    "price": "5000",
+    "thumbnail": "asd",
+    "id": 12
+  }
+]
