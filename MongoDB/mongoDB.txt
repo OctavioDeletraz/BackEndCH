@@ -1,0 +1,62 @@
+0. CONSIGNA:
+use ecommerce
+
+1 y 2. Agregar 10 documentos:
+db.createCollection('productos')
+db.createCollection('mensajes')
+
+db.productos.insertMany([{ nombre: 'Martillo 1', codigo: 'ABC', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 120, stock: 25, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 2', codigo: 'ABC1', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 580, stock: 25, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 3', codigo: 'ABC2', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 900, stock: 25, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 4', codigo: 'ABC3', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 1280, stock: 5, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 5', codigo: 'ABC4', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 1700, stock: 20, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 6', codigo: 'ABC5', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 2300, stock: 12, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 7', codigo: 'ABC6', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 2860, stock: 25, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 8', codigo: 'ABC7', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 3350, stock: 25, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 9', codigo: 'ABC8', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 4320, stock: 48, timestamp: '30/11/2022 2:26:40 PM'},
+{ nombre: 'Martillo 10', codigo: 'ABC9', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 4990, stock: 6, timestamp: '30/11/2022 2:26:40 PM'},
+])
+
+3. Listar todos los documentos
+db.productos.find()
+4. Mostrar cantidad de documentos
+db.productos.countDocuments()
+
+db.mensajes.insertMany([{ email: 'gabo1@pm.me', texto: 'Mensaje 1', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'octav@pm.me', texto: 'Mensaje 2', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'toto@pm.me', texto: 'Mensaje 3', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'pedro@pm.me', texto: 'Mensaje 4', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'raul@pm.me', texto: 'Mensaje 5', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'lau@pm.me', texto: 'Mensaje 6', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'eze@pm.me', texto: 'Mensaje 7', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'juan@pm.me', texto: 'Mensaje 8', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'jony@pm.me', texto: 'Mensaje 9', timestamp: '30/11/2022 2:26:40 PM'},
+{ email: 'sancho@pm.me', texto: 'Mensaje 10', timestamp: '30/11/2022 2:26:40 PM'},
+ ])
+
+ 3. Listar todos los documentos
+db.mensajes.find()
+4. Mostrar cantidad de documentos
+db.mensajes.countDocuments()
+
+5. CRUD productos
+A) db.productos.insertOne({nombre: 'Martillo 11', codigo: 'ABC9', imagenurl: 'https://cdn1.iconfinder.com/data/icons/gardening-tool/24/hammer-512.png', precio: 4990, stock: 25, timestamp: '30/11/2022 2:26:40 PM'})
+B.1 db.productos.find({'precio': {$lt: 1000}})
+B.2 db.productos.find({ $and: [ { precio: { $gt: 1000 } }, { precio: { $lt: 3000 } } ] })
+B.3 db.productos.find( { 'precio': { $gt: 3000 } })
+B.4 db.productos.find({},{"nombre":1, "_id":0}).sort({precio: 1}).skip(2).limit(1)
+C) db.productos.updateMany({},{$set: {stock:100}})
+D) db.productos.updateMany({precio: {$gt: 4000}},{$set: {stock:0}})
+E) db.productos.deleteMany({precio: {$lt: 1000}})
+
+6. 
+
+db.createUser(
+  {
+    user: "pepe",
+    pwd: "asd456",
+    roles: [
+       { role: "read", db: "ecommerce" }
+    ]
+  }
+)
