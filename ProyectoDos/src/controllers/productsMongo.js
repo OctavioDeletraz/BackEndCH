@@ -1,31 +1,13 @@
 const mongoose = require('mongoose')
 
 const productsSchema = new mongoose.Schema({
-    timestamp: {
-        type: String,
-        required: true
-    },
-    nombre: {
-        type: String,
-        required: true
-    },
-    descripcion: {
-        type: String
-    },
-    codigo: {
-        type: String,
-        required: true
-    },
-    foto: {
-        type: String,
-        required: true
-    },
-    precio: {
-        type: Number
-    },
-    stock: {
-        type: Number
-    }
+    timestamp: { type: String, required: true },
+    nombre: { type: String, required: true },
+    descripcion: { type: String },
+    codigo: { type: String, required: true },
+    foto: { type: String, required: true },
+    precio: { type: Number },
+    stock: { type: Number }
 })
 class ProductsDAOContainer {
     productsDAO = mongoose.model('productos', productsSchema)

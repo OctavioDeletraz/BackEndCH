@@ -13,4 +13,5 @@ class ProductsContainerFile extends ProductsDAOContainer {
         })
     }
 }
+
 module.exports = ProductsContainerFile

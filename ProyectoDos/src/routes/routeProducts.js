@@ -1,8 +1,12 @@
 const { Router } = require('express')
-const productController = require('../../controllers/products/Products')
+const productController = require('../dao/firebaseProducts.js')
+// const productController = require('../../dao/mongoProducts.js')
 const routerProducts = new Router()
 const onAdmin = require('../../helpers/admin')
 
+// const admin = true
+
+// deberia atajar una entrada de ID incorrecta?
 
 routerProducts.get('/:id', async (req, res, next) => {
     const { id } = req.params
@@ -13,22 +17,21 @@ routerProducts.get('/:id', async (req, res, next) => {
 routerProducts.get('/', async (req, res, next) => {
     const products = await productController.getAll()
     res.send(products)
-
 })
 
 
 routerProducts.post('/', onAdmin, async (req, res, next) => {
-    const body = req.body
-    const newProduct = await productController.save(body)
+    const product = { ...req.body, timestamp: `Creado: ${new Date().toLocaleString()}` }
+    const newProduct = await productController.save(product)
     console.log(newProduct)
     res.send(newProduct)
 })
 
 
 routerProducts.put('/:id', onAdmin, async (req, res, next) => {
-    const body = req.body
+    const product = { ...req.body, timestamp: `Modificado: ${new Date().toLocaleString()}` }
     const { id } = req.params;
-    const productUpdated = await productController.update(body, id)
+    const productUpdated = await productController.update(product, id)
     res.send(productUpdated)
 })
 
