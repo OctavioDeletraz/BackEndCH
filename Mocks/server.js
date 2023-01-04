@@ -6,7 +6,7 @@ const path = require('path');
 const { Server: IOServer } = require('socket.io')
 const http = require('http');
 const app = express()
-const PORT = 8081
+const PORT = 8080
 const MongoConnnection = require('./config/mongooseConection')
 const productsAccsess = new MongoConnnection()
 const MongoConnnectionChat = require('./config/mongooseConectionChat')
@@ -54,20 +54,20 @@ io.on('connection', async (socket) => {
         nombre: 'Chat general',
         mensajes: getAllMessages
     }
-    const authorSchema = new schema.Entity('author')
-    const textSchema = new schema.Entity('messages', {
-        id: { type: String },
-        author: authorSchema,
-        text: ''
-    });
-    const chatSchema = new schema.Entity('chats', {
-        id: { type: String },
-        nombre: '',
-        mensajes: [textSchema]
-    })
-    const chatNormalized = normalize(chatOriginal, chatSchema)
-    console.log(chatNormalized)
-    const chatDenormalized = denormalize(chatOriginal, chatNormalized)
+
+
+    const authorSchema = new schema.Entity('author', {}, { idAttribute: 'email' })
+
+    const textSchema = new schema.Entity('post', { author: authorSchema }, { idAttribute: 'id' })
+
+    const chatSchema = new schema.Entity('posts', { mensajes: [textSchema] }, { idAttribute: 'id' })
+
+
+    const nomrmalizarMensajes = normalize(chatOriginal, chatSchema)
+
+    console.log(nomrmalizarMensajes)
+
+    const chatDenormalized = denormalize(chatOriginal, nomrmalizarMensajes)
     console.log(chatDenormalized)
     socket.on('update-message', async message => {
 
