@@ -17,7 +17,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
-const mongoURlString = `mongodb+srv://${process.env.MONGO_ATLAS_USER}:${process.env.MONGO_ATLAS_PASS}@clustercoder.rrnnvzr.mongodb.net/?retryWrites=true&w=majority`
+
+const mongoURlString = `mongodb+srv://${process.env.MONGO_ATLAS_USER}:${process.env.MONGO_ATLAS_PASS}@${process.env.MONGO_ATLAS_HOST}/?retryWrites=true&w=majority`
 
 app.use(cookieParser());
 app.use(session({
@@ -80,6 +81,7 @@ io.on('connection', async (socket) => {
 
     //Normalizr
     function normalizeAll(getAllMessages) {
+        console.log(getAllMessages)
         const newGetAllMessages = getAllMessages.map((e) => {
             const allMessagesObject = {
                 author: e.author,
