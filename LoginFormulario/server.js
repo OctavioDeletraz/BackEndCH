@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const routerProducts = require('./routes/products/index.js')
 const authWebRouter = require('./routes/web/auth.js')
-// import {productosVariable} from './routes/products/index.js'
 const { faker } = require('@faker-js/faker')
 faker.locale = 'es'
 const mensajeController = require('./controllers/ContenedorMensajes.js')
@@ -10,6 +9,8 @@ const productosController = require('./controllers/ContenedorProductos.js')
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const { normalize, schema, denormalize } = require('normalizr');
+const passport = require('passport');
+const { Strategy: LocalStrategy } = require('passport-local');
 
 const dotenv = require('dotenv');
 dotenv.config();
@@ -17,8 +18,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
-
-const mongoURlString = `mongodb+srv://${process.env.MONGO_ATLAS_USER}:${process.env.MONGO_ATLAS_PASS}@${process.env.MONGO_ATLAS_HOST}/?retryWrites=true&w=majority`
+const mongoURlString = `mongodb+srv://${process.env.MONGO_ATLAS_USER}:${process.env.MONGO_ATLAS_PASS}@clusteroctavio.nugxlnp.mongodb.net/?retryWrites=true&w=majority`
 
 app.use(cookieParser());
 app.use(session({
@@ -33,6 +33,8 @@ app.use(session({
         maxAge: 600000
     }
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const httpServer = new createServer(app)
 const io = new Server(httpServer)
@@ -81,7 +83,6 @@ io.on('connection', async (socket) => {
 
     //Normalizr
     function normalizeAll(getAllMessages) {
-        console.log(getAllMessages)
         const newGetAllMessages = getAllMessages.map((e) => {
             const allMessagesObject = {
                 author: e.author,
@@ -133,7 +134,10 @@ app.use(routerProducts)
 
 //Server
 const PORT = 8080
-const server = httpServer.listen(PORT, () => {
-    console.log(`Servidor http escuchando en el puerto ${server.address().port}`)
-})
+
+const server = httpServer.listen(PORT, () =>
+    console.log(
+        `Server started on PORT http://localhost:${PORT} at ${new Date().toLocaleString()}`
+    )
+);
 server.on("error", error => console.log(`Error en servidor ${error}`))
