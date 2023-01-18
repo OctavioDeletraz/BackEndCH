@@ -36,7 +36,7 @@ app.use(express.json())
 app.use(cookieParser())
 
 app.use(session({
-    store: MongoStore.create({ mongoUrl: `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@ecommercecoderhousesant.6p5agbc.mongodb.net/sessions?retryWrites=true&w=majority`, mongoOptions: advancedOptions }),
+    store: MongoStore.create({ mongoUrl: `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@clusteroctavio.nugxlnp.mongodb.net/?retryWrites=true&w=majority`, mongoOptions: advancedOptions }),
     secret: 'algo',
     resave: false,
     saveUninitialized: false
