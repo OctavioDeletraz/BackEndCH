@@ -1,99 +1,167 @@
-require('dotenv').config()
-const express = require('express')
-const morgan = require('morgan');
-const routeProducts = require('./routes/productRoutes')
-const routeLogin = require('./routes/loginRoute')
-const routeRegister = require('./routes/registerRoute')
-const routeLogout = require('./routes/logoutRoute')
-const routeInfo = require('./routes/infoRoute')
-const routeRandom = require('./routes/randomRoute')
-const path = require('path');
-const { Server: IOServer } = require('socket.io')
-const http = require('http');
-const app = express()
-const PORT = 8081
-const MongoConnnection = require('./config/mongooseConection')
-const productsAccsess = new MongoConnnection()
-const MongoConnnectionChat = require('./config/mongooseConectionChat')
-const chatAccess = new MongoConnnectionChat()
+const express = require('express');
+const routerProducts = require('./routes/products/index.js')
+const authWebRouter = require('./routes/web/auth.js')
+const routerProcess = require('./routes/object/process.js')
+const { faker } = require('@faker-js/faker')
+const mensajeController = require('./controllers/ContenedorMensajes.js')
+const productosController = require('./controllers/ContenedorProductos.js')
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+const { normalize, schema, denormalize } = require('normalizr');
+const passport = require('passport');
+const { Strategy: LocalStrategy } = require('passport-local');
+const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+const parseArgs = require('minimist');
+const { Console } = require('console');
+const cluster = require('cluster');
+const os = require('os')
 
-require('dotenv').config()
+const args = parseArgs(process.argv.slice(2));
+const app = express();
+faker.locale = 'es'
+dotenv.config();
+const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true };
+const mongoURlString = `mongodb+srv://${process.env.MONGO_ATLAS_USER}:${process.env.MONGO_ATLAS_PASS}@clustercoder.rrnnvzr.mongodb.net/?retryWrites=true&w=majority`
+const PORT = args.port || 8080;
+// const PORT = parseInt(process.argv[2]) || 8080;
+const modoCluster = args.modo == 'CLUSTER'
+// const modoCluster = process.argv[3] == 'CLUSTER';
+const numCPUs = os.cpus().length;
 
-
-
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const MongoStore = require('connect-mongo')
-const advancedOptions = { useNewUrlParser: true, useUnifiedTopology: true }
-
-const httpServer = http.createServer(app)
-const io = new IOServer(httpServer)
-
-
-app.use(morgan('dev'))
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
-app.use(cookieParser())
-
+app.use(cookieParser());
 app.use(session({
-    store: MongoStore.create({ mongoUrl: `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@clusteroctavio.nugxlnp.mongodb.net/?retryWrites=true&w=majority`, mongoOptions: advancedOptions }),
-    secret: 'algo',
+    store: MongoStore.create({
+        mongoUrl: mongoURlString,
+        mongoOptions: advancedOptions
+    }),
+    secret: 'coder19dic',
     resave: false,
-    saveUninitialized: false
-}))
-
-app.use(express.static(__dirname + '/public'))
-app.set('views', path.join(__dirname, './public/views'));
-app.set('view engine', 'ejs');
-
-
-app.use(routeProducts)
-app.use(routeLogin)
-app.use(routeRegister)
-app.use(routeLogout)
-app.use(routeInfo)
-app.use(routeRandom)
-
-const isAuth = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        next()
-    } else {
-        res.redirect('/login')
+    saveUninitialized: false,
+    cookie: {
+        maxAge: 600000
     }
-}
-app.get('/', isAuth, (req, res) => {
-    res.redirect('/api/productos')
-})
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+const httpServer = new createServer(app)
+const io = new Server(httpServer)
+
+app.set('view engine', 'ejs')
+app.set('views', './public/views');
+
+app.use(express.static('public'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+
+// webSocket
 
 io.on('connection', async (socket) => {
-    console.log('New user connected. Socket ID : ', socket.id);
-
-    socket.emit('products', await productsAccsess.getProducts());
-
-    socket.on('update-product', async product => {
-
-        await productsAccsess.insertProduct(product)
-        io.sockets.emit('products', await productsAccsess.getProducts())
+    console.log('Un cliente se ha conectado');
+    //User
+    socket.on("loginUsuario", (logUser) => {
+        socket.emit("user", logUser)
     })
 
-    socket.emit('messages', await chatAccess.getMessages())
+    //productos
+    const productos = await productosController.getAll()
+    socket.emit("productos", productos)
 
-    socket.on('update-message', async message => {
-        await chatAccess.insertMessage(message)
-        io.sockets.emit('messages', await chatAccess.getMessages());
+    socket.on("guardarNuevoProducto", async (nuevoProducto) => {
+        const newProducto = await productosController.save(nuevoProducto)
+        io.sockets.emit("productos", newProducto)
     })
-    socket.on('disconnect', () => {
-        console.log('User was disconnected');
+
+    //Normalizr
+    function normalizeAll(getAllMessages) {
+        const newGetAllMessages = getAllMessages.map((e) => {
+            const allMessagesObject = {
+                author: e.author,
+                date: e.date,
+                text: e.text
+            }
+            return allMessagesObject
+        })
+        const chatOriginal = {
+            id: 'mensajes',
+            mensajes: newGetAllMessages
+        }
+        const schemaAuthor = new schema.Entity('author', {}, { idAttribute: 'email' });
+        const schemaMensaje = new schema.Entity('text', { author: schemaAuthor })
+        const schemaMensajes = new schema.Entity('posts', { mensajes: [schemaMensaje] })
+        const normalizarMensajes = normalize(chatOriginal, schemaMensajes)
+        const sinNorm = JSON.stringify(newGetAllMessages).length
+        const norm = JSON.stringify(normalizarMensajes).length
+        const porcentajeCompr = 100 - ((norm * 100) / sinNorm)
+        const chatDenormalized = denormalize(chatOriginal, normalizarMensajes)
+        const compr = Math.round(porcentajeCompr * 100) / 100
+        return { chatDenormalized, compr }
+    }
+    // mensajes web socket
+    const messages = await mensajeController.getAll()
+    socket.emit('messages', normalizeAll(messages));
+
+    socket.on('messegesNew', async (data) => {
+        const newNormMessage = {
+            author: {
+                id: data.author.email,
+                nombre: data.author.nombre,
+                apellido: data.author.apellido,
+                edad: data.author.edad,
+                alias: data.author.alias,
+                avatar: data.author.avatar
+            },
+            date: new Date,
+            text: data.text
+        }
+        const historialSave = await mensajeController.save(newNormMessage)
+        io.sockets.emit('messages', normalizeAll(historialSave));
+    });
+});
+
+//CRUD
+app.use(authWebRouter)
+app.use(routerProducts)
+app.use(routerProcess)
+
+//Server CLOUSETER OR FORK
+
+// master
+if (modoCluster && cluster.isPrimary) {
+
+    console.log(`Primary ${process.pid} is running`);
+    console.log(`número de procesadores: ${numCPUs}`);
+
+    for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+    }
+
+    cluster.on('exit', worker => {
+        console.log(`worker ${worker.process.pid} died`, new Date().toLocaleString());
+        cluster.fork();
     });
 }
-)
 
-const server = httpServer.listen(PORT, () =>
-    console.log(
-        `Server started on PORT http://localhost:${PORT} at ${new Date().toLocaleString()}`
-    )
-);
+// workers
+else {
 
-server.on('error', (err) => {
-    console.log('Error en el servidor:', err)
-})
+    app.get('/datos', (req, res) => {
+        res.send(`Server en Port(${PORT}) - PID ${process.pid} - FyH ${new Date().toLocaleString()}`);
+    })
+
+    const server = app.listen(PORT, () => {
+        console.log(`Servidor express escuchando en http://localhost:${PORT} - PID ${process.pid}`);
+    });
+
+    server.on('error', error => console.log(`Error en servidor ${error}`));
+}
+
+
+//Server
+// const server = httpServer.listen(PORT, () => {
+//     console.log(`Servidor http escuchando en el puerto ${server.address().port}`)
+// })
+// server.on("error", error => console.log(`Error en servidor ${error}`))

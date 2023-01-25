@@ -1,0 +1,26 @@
+node server.js --port 8080 
+node server.js --port 8080 --modo CLUSTER
+
+nodemon server.js --port 8080 
+nodemon server.js --port 8080 --modo CLUSTER
+
+forever start server.js --port 8080
+forever start server.js --port 8081 --modo CLUSTER
+forever list
+forever stopall
+
+pm2 start server.js --name="Server1" --watch -- --port 8081
+pm2 start server.js --name="Server2" --watch -i max -- --port 8081 --modo CLUSTER
+pm2 list
+pm2 delete Server1
+pm2 delete Server2
+pm2 list
+
+pm2 start server.js --name="Server1" --watch -- --port 8080
+pm2 start server.js --name="Server2" --watch -- --port 8081 --modo CLUSTER
+
+pm2 start server.js --name="Server1" --watch -- --port 8080
+pm2 start server.js --name="Server1" --watch -- --port 8082
+pm2 start server.js --name="Server1" --watch -- --port 8083
+pm2 start server.js --name="Server1" --watch -- --port 8084
+pm2 start server.js --name="Server1" --watch -- --port 8085

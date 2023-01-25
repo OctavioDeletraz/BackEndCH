@@ -4,6 +4,7 @@ const routerProcess = new Router()
 const args = process.argv;
 const { fork } = require('child_process');
 const { query } = require('express');
+const os = require('os')
 
 routerProcess.get('/info', async (req, res, next) => {
 
@@ -14,6 +15,7 @@ routerProcess.get('/info', async (req, res, next) => {
     const rutaCompleta = process.execPath;
     const pid = process.pid;
     const carpeta = process.cwd()
+    const numCPUs = os.cpus().length;
 
     const datos = {
         argumentos,
@@ -22,7 +24,8 @@ routerProcess.get('/info', async (req, res, next) => {
         memory,
         rutaCompleta,
         pid,
-        carpeta
+        carpeta,
+        numCPUs,
     }
 
     res.send({ datos })
