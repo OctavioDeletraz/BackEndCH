@@ -1,0 +1,15 @@
+const mongoose = require('mongoose')
+const { Schema } = mongoose
+
+const messagesSchema = new Schema({
+    author: {
+        type: Object,
+        required: true
+    },
+    text: {
+        type: String,
+        required: true
+    }
+})
+
+module.exports = mongoose.model('messages', messagesSchema)
