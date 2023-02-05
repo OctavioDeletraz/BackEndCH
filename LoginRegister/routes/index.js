@@ -1,5 +1,5 @@
 
-const {Router} = require('express');
+const { Router } = require('express');
 const isAuth = require('../utils/auth');
 const logger = require('../utils/logger')
 
@@ -19,19 +19,19 @@ router.use(passport.initialize())
 router.use(passport.session())
 
 
-router.use('/api/productos',isAuth, routeProducts)
+router.use('/api/productos', isAuth, routeProducts)
 router.use('/login', routeLogin)
 router.use('/register', routeRegister)
 router.use('/logout', routeLogout)
-router.use('/info',routeInfo)
-router.use('/api/randoms',routeRandom)
+router.use('/info', routeInfo)
+router.use('/api/randoms', routeRandom)
 
 router.get('/', (req, res) => {
     res.redirect('/api/productos')
 })
 router.get('*', (req, res) => {
     logger.warn(`Route: ${req.path} 404 Not Found Method: ${req.method} `);
-    res.send("Sorry 🤷‍♂️ 404 Not Found");
+    res.send("404 Not Found");
 });
 
 
