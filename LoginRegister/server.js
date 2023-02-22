@@ -23,7 +23,7 @@ if (modo == 'cluster' && cluster.isPrimary) {
 
     const morgan = require('morgan');
 
-    const routes = require('./routes/index')
+    const routes = require('./src/routes/index')
 
     const path = require('path');
 
@@ -36,11 +36,16 @@ if (modo == 'cluster' && cluster.isPrimary) {
 
     const PORT = parseInt(process.argv[2]) || 8080
 
-    require('./db/dbConnection')
-    const sessionDBConnection = require('./db/sessionDBConnection')
-
-    const {getProducts, insertProduct} = require('./controllers/products')
-    const {getMessages, insertMessage} = require('./controllers/messages')
+    require('./src/db/dbConnection')
+    const sessionDBConnection = require('./src/db/sessionDBConnection')
+    const {
+        getProducts,
+        insertProduct
+    } = require('./src/controllers/products')
+    const {
+        getMessages,
+        insertMessage
+    } = require('./src/controllers/messages')
 
 
     //middlewares
@@ -50,35 +55,24 @@ if (modo == 'cluster' && cluster.isPrimary) {
         extended: true
     }))
     app.use(express.json())
-
     app.use(sessionDBConnection)
-
     app.use(express.static(__dirname + '/public'))
-
     app.set('views', path.join(__dirname, './public/views'));
     app.set('view engine', 'ejs');
-
 
     //rutas
 
     app.use(routes)
 
-
-
     //socket
     io.on('connection', async (socket) => {
         console.log('New user connected. Socket ID : ', socket.id);
-
         socket.emit('products', await getProducts());
-
         socket.on('update-product', async product => {
-
             await insertProduct(product)
             io.sockets.emit('products', await getProducts())
         })
-
         socket.emit('messages', await getMessages())
-
         socket.on('update-message', async message => {
             await insertMessage(message)
             io.sockets.emit('messages', await getMessages());
@@ -87,14 +81,12 @@ if (modo == 'cluster' && cluster.isPrimary) {
             console.log('User was disconnected');
         });
     })
-
     //server
     const server = httpServer.listen(PORT, () =>
         console.log(
             `Server started on PORT http://localhost:${PORT} --${process.pid} -- at ${new Date().toLocaleString()}`
         )
     );
-
     server.on('error', (err) => {
         console.log('Error en el servidor:', err)
     })

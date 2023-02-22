@@ -5,7 +5,7 @@ function loggerProd() {
     return winston.createLogger({
         transports: [
             new winston.transports.File({
-                filename: "logs/prod-error.log",
+                filename: "src/logs/prod-error.log",
                 level: "error",
             }),
         ],
@@ -19,11 +19,11 @@ function loggerDev() {
                 format: winston.format.simple(),
             }),
             new winston.transports.File({
-                filename: "logs/error.log",
+                filename: "src/logs/error.log",
                 level: "error",
             }),
             new winston.transports.File({
-                filename: "logs/warn.log",
+                filename: "src/logs/warn.log",
                 level: "warn",
             }),
         ],
