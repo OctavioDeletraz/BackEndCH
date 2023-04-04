@@ -1,0 +1,1 @@
+To start run: denon run --allow-net --allow-read --allow-write server.tsx
